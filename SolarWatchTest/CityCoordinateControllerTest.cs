@@ -25,28 +25,28 @@ namespace SolarWatchTest
         }
 
         [Test]
-        public void GetCityCoordinates_ReturnsBadRequest_IfGeocodingApiProviderFails()
+        public async Task GetCityCoordinates_ReturnsBadRequest_IfGeocodingApiProviderFails()
         {
             // Arrange
-            _geocodingApiProviderMock.Setup(x => x.GetCityCoordinates(It.IsAny<string>())).Throws(new Exception());
+            _geocodingApiProviderMock.Setup(x => x.GetCityCoordinates(It.IsAny<string>())).ThrowsAsync(new Exception());
 
             // Act
-            var result = _controller.GetCityCoordinates("city");
+            var result = await _controller.GetCityCoordinates("city");
 
             // Assert
             Assert.IsInstanceOf(typeof(BadRequestObjectResult), result);
         }
         
         [Test]
-        public void GetCityCoordinates_ReturnsOkResult_IfGeocodingApiProviderSucceeds()
+        public async Task GetCityCoordinates_ReturnsOkResult_IfGeocodingApiProviderSucceeds()
         {
             // Arrange
             var cityCoordinate = new CityCoordinate();
-            _geocodingApiProviderMock.Setup(x => x.GetCityCoordinates(It.IsAny<string>())).Returns(cityCoordinate.ToString() ?? string.Empty);
+            _geocodingApiProviderMock.Setup(x => x.GetCityCoordinates(It.IsAny<string>())).ReturnsAsync(cityCoordinate.ToString() ?? string.Empty);
             _cityCoordinatesJsonProcessorMock.Setup(x => x.Process(cityCoordinate.ToString() ?? string.Empty))
                 .Returns(cityCoordinate);
             // Act
-            var result = _controller.GetCityCoordinates("city");
+            var result = await _controller.GetCityCoordinates("city");
 
             // Assert
             Assert.IsInstanceOf(typeof(OkObjectResult), result);
