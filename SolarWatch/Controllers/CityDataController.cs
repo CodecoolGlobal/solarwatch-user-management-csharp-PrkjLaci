@@ -5,13 +5,13 @@ namespace SolarWatch.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class CityCoordinateController : ControllerBase
+public class CityDataController : ControllerBase
 {
-    private readonly ILogger<CityCoordinateController> _logger;
+    private readonly ILogger<CityDataController> _logger;
     private readonly IGeocodingApiProvider _geocodingApiProvider;
     private readonly ICityCoordinatesJsonProcessor _cityCoordinatesJsonProcessor;
     
-    public CityCoordinateController(ILogger<CityCoordinateController> logger, 
+    public CityDataController(ILogger<CityDataController> logger, 
         IGeocodingApiProvider geocodingApiProvider,
         ICityCoordinatesJsonProcessor cityCoordinatesJsonProcessor)
     {
