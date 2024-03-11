@@ -1,6 +1,7 @@
 using SolarWatch.Service.Geocoding;
 using SolarWatch.Service.SunsetSunRise;
 using dotenv.net;
+using SolarWatch.Repository.City;
 
 var builder = WebApplication.CreateBuilder(args);
 DotEnv.Load();
@@ -12,6 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IGeocodingApiProvider, GeocodingApiProvider>();
 builder.Services.AddTransient<ICityCoordinatesJsonProcessor, CityCoordinatesJsonProcessor>();
+builder.Services.AddTransient<ICityDataRepository, CityDataRepository>();
 builder.Services.AddTransient<ISunsetSunriseApiProvider, SunsetSunriseApiProvider>();
 builder.Services.AddTransient<ISunsetSunriseJsonProcessor, SunsetSunriseJsonProcessor>();
 

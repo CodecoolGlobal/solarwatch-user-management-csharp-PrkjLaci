@@ -10,18 +10,18 @@ namespace SolarWatchTest
     [TestFixture]
     public class CityCoordinateControllerTests
     {
-        private Mock<ILogger<CityCoordinateController>> _loggerMock;
+        private Mock<ILogger<CityDataController>> _loggerMock;
         private Mock<IGeocodingApiProvider> _geocodingApiProviderMock;
         private Mock<ICityCoordinatesJsonProcessor> _cityCoordinatesJsonProcessorMock;
-        private CityCoordinateController _controller;
+        private CityDataController _controller;
 
         [SetUp]
         public void SetUp()
         {
-            _loggerMock = new Mock<ILogger<CityCoordinateController>>();
+            _loggerMock = new Mock<ILogger<CityDataController>>();
             _geocodingApiProviderMock = new Mock<IGeocodingApiProvider>();
             _cityCoordinatesJsonProcessorMock = new Mock<ICityCoordinatesJsonProcessor>();
-            _controller = new CityCoordinateController(_loggerMock.Object, _geocodingApiProviderMock.Object, _cityCoordinatesJsonProcessorMock.Object);
+            _controller = new CityDataController(_loggerMock.Object, _geocodingApiProviderMock.Object, _cityCoordinatesJsonProcessorMock.Object);
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace SolarWatchTest
         public async Task GetCityCoordinates_ReturnsOkResult_IfGeocodingApiProviderSucceeds()
         {
             // Arrange
-            var cityCoordinate = new CityCoordinate();
+            var cityCoordinate = new CityData();
             _geocodingApiProviderMock.Setup(x => x.GetCityCoordinates(It.IsAny<string>())).ReturnsAsync(cityCoordinate.ToString() ?? string.Empty);
             _cityCoordinatesJsonProcessorMock.Setup(x => x.Process(cityCoordinate.ToString() ?? string.Empty))
                 .Returns(cityCoordinate);

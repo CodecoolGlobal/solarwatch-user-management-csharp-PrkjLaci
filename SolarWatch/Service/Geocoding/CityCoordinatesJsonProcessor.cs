@@ -7,20 +7,31 @@ namespace SolarWatch.Service.Geocoding
 {
     public class CityCoordinatesJsonProcessor : ICityCoordinatesJsonProcessor
     {
-        public CityCoordinate Process(string data)
+        public CityData Process(string data)
         {
             JsonDocument json = JsonDocument.Parse(data);
             JsonElement root = json.RootElement;
-            
-            var coordElement = root.GetProperty("coord");
+          
+            JsonElement cityElement = root[0];
 
-            CityCoordinate coordinates = new CityCoordinate
+            CityData cityData = new CityData
             {
-                Latitude = coordElement.GetProperty("lat").GetDouble(),
-                Longitude = coordElement.GetProperty("lon").GetDouble()
+                CityName = cityElement.GetProperty("name").GetString(),
+                Latitude = cityElement.GetProperty("lat").GetDouble(),
+                Longitude = cityElement.GetProperty("lon").GetDouble(),
+                Country = cityElement.GetProperty("country").GetString(),
             };
             
-            return coordinates;
+            if(cityElement.TryGetProperty("state", out JsonElement stateElement))
+            {
+                cityData.State = stateElement.GetString();
+            }
+            else
+            {
+                cityData.State = null;
+            }
+            
+            return cityData;
         }
     }
 }
