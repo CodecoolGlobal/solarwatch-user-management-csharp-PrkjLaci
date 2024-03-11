@@ -1,4 +1,5 @@
 using SolarWatch.Service.Geocoding;
+using SolarWatch.Service.SunsetSunRise;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IGeocodingApiProvider, GeocodingApiProvider>();
 builder.Services.AddTransient<ICityCoordinatesJsonProcessor, CityCoordinatesJsonProcessor>();
+builder.Services.AddTransient<ISunsetSunriseApiProvider, SunsetSunriseApiProvider>();
+builder.Services.AddTransient<ISunsetSunriseJsonProcessor, SunsetSunriseJsonProcessor>();
 
 var app = builder.Build();
 
