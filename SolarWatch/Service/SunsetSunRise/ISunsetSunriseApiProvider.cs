@@ -2,5 +2,5 @@
 
 public interface ISunsetSunriseApiProvider
 { 
-    string GetSunsetSunrise(string city, string date);
+    Task<string> GetSunsetSunrise(string city, string date);
 }
