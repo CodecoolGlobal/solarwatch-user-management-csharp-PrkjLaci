@@ -41,7 +41,7 @@ namespace SolarWatchTest
         public async Task GetCityCoordinates_ReturnsOkResult_IfGeocodingApiProviderSucceeds()
         {
             // Arrange
-            var cityCoordinate = new CityCoordinate();
+            var cityCoordinate = new CityData();
             _geocodingApiProviderMock.Setup(x => x.GetCityCoordinates(It.IsAny<string>())).ReturnsAsync(cityCoordinate.ToString() ?? string.Empty);
             _cityCoordinatesJsonProcessorMock.Setup(x => x.Process(cityCoordinate.ToString() ?? string.Empty))
                 .Returns(cityCoordinate);
