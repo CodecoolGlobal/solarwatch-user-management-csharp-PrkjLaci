@@ -14,7 +14,7 @@ public class GeocodingApiProvider : IGeocodingApiProvider
     {
         var apiKey = Environment.GetEnvironmentVariable("OPENWEATHER_API_KEY");
         Console.WriteLine(apiKey);
-        var url = $"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}";
+        var url = $"https://api.openweathermap.org/geo/1.0/direct?q={city}&appid={apiKey}";
 
         using var client = new HttpClient();
         
