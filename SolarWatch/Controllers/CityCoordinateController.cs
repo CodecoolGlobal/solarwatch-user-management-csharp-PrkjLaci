@@ -26,7 +26,6 @@ public class CityCoordinateController : ControllerBase
         try
         {
             var cityCoordinates = _geocodingApiProvider.GetCityCoordinates(city);
-            _logger.LogInformation("City coordinates: {cityCoordinates}", cityCoordinates);
             return Ok(_cityCoordinatesJsonProcessor.Process(cityCoordinates));
         }
         catch (Exception e)
