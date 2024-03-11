@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using SolarWatch.Controllers;
+using SolarWatch.Models;
 using SolarWatch.Service.Geocoding;
 using SolarWatch.Service.SunsetSunRise;
 
@@ -31,24 +32,24 @@ public class SunsetSunriseControllerTest
     }
     
     [Test]
-    public void GetSunsetSunriseReturnsBadRequestIfGeocodingApiProviderFails()
+    public async Task GetSunsetSunrise_ReturnsBadRequest_IfSunsetSunriseProviderFails()
     {
-        _geocodingApiProviderMock.Setup(x => x.GetCityCoordinates(It.IsAny<string>())).Throws(new Exception());
+        _sunsetSunriseProviderMock.Setup(x => x.GetSunsetSunrise(It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception());
         
-        var result = _controller.GetSunsetSunrise("city", "date");
+        var result = await _controller.GetSunsetSunrise("city", "date");
         
         Assert.IsInstanceOf(typeof(BadRequestObjectResult), result);
     }
     
     [Test]
-    public void GetSunsetSunriseReturnsBadRequestIfCityCoordinatesJsonProcessorFails()
+    public async Task GetSunsetSunrise_ReturnsOkResult_IfSunsetSunriseProvidersSucceed()
     {
-        var cityData = "{}";
-        _geocodingApiProviderMock.Setup(x => x.GetCityCoordinates(It.IsAny<string>())).Returns(cityData);
-        _cityCoordinatesJsonProcessorMock.Setup(x => x.Process(cityData)).Throws<Exception>();
+        var sunsetSunriseData = new SunsetSunriseTime();
+        _sunsetSunriseProviderMock.Setup(x => x.GetSunsetSunrise(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(sunsetSunriseData.ToString() ?? string.Empty);
+        _sunsetSunriseJsonProcessorMock.Setup(x => x.Process(sunsetSunriseData.ToString())).Returns(sunsetSunriseData);
         
-        var result = _controller.GetSunsetSunrise("city", "date");
+        var result = await _controller.GetSunsetSunrise("city", "date");
         
-        Assert.IsInstanceOf(typeof(BadRequestObjectResult), result);
+        Assert.IsInstanceOf(typeof(OkObjectResult), result);
     }
 }
