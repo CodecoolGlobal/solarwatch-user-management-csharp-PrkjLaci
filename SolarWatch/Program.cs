@@ -9,6 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IGeocodingApiProvider, GeocodingApiProvider>();
+builder.Services.AddTransient<ICityCoordinatesJsonProcessor, CityCoordinatesJsonProcessor>();
 
 var app = builder.Build();
 
