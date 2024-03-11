@@ -22,7 +22,16 @@ namespace SolarWatch.Service.Geocoding
                 Country = cityElement.GetProperty("country").GetString(),
             };
             
-            return coordinates;
+            if(cityElement.TryGetProperty("state", out JsonElement stateElement))
+            {
+                cityData.State = stateElement.GetString();
+            }
+            else
+            {
+                cityData.State = null;
+            }
+            
+            return cityData;
         }
     }
 }
