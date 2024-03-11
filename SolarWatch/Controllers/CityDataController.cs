@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SolarWatch.Repository.City;
 using SolarWatch.Service.Geocoding;
 
 namespace SolarWatch.Controllers;
@@ -10,14 +11,17 @@ public class CityDataController : ControllerBase
     private readonly ILogger<CityDataController> _logger;
     private readonly IGeocodingApiProvider _geocodingApiProvider;
     private readonly ICityCoordinatesJsonProcessor _cityCoordinatesJsonProcessor;
+    private readonly ICityDataRepository _cityDataRepository;
     
     public CityDataController(ILogger<CityDataController> logger, 
         IGeocodingApiProvider geocodingApiProvider,
-        ICityCoordinatesJsonProcessor cityCoordinatesJsonProcessor)
+        ICityCoordinatesJsonProcessor cityCoordinatesJsonProcessor,
+        ICityDataRepository cityDataRepository)
     {
         _logger = logger;
         _geocodingApiProvider = geocodingApiProvider;
         _cityCoordinatesJsonProcessor = cityCoordinatesJsonProcessor;
+        _cityDataRepository = cityDataRepository;
     }
     
     [HttpGet("GetCityCoordinates")]
@@ -25,8 +29,18 @@ public class CityDataController : ControllerBase
     {
         try
         {
-            var cityCoordinates = await _geocodingApiProvider.GetCityCoordinates(city);
-            return Ok(_cityCoordinatesJsonProcessor.Process(cityCoordinates));
+            var cityData = _cityDataRepository.GetCityData(city);
+            
+            if(cityData != null)
+            {
+                return Ok(cityData);
+            }
+            var cityDataFromApi = await _geocodingApiProvider.GetCityCoordinates(city);
+            var cityEntity = _cityCoordinatesJsonProcessor.Process(cityDataFromApi);
+            
+            _cityDataRepository.SaveCityData(cityEntity);
+            
+            return Ok(cityEntity);
         }
         catch (Exception e)
         {
