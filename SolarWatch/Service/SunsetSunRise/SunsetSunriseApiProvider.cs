@@ -18,16 +18,17 @@ public class SunsetSunriseApiProvider : ISunsetSunriseApiProvider
         _cityCoordinatesJsonProcessor = cityCoordinatesJsonProcessor;
     }
     
-    public string GetSunsetSunrise(string city, string date)
+    public async Task<string> GetSunsetSunrise(string city, string date)
     {
-        var cityData = _geocodingApiProvider.GetCityCoordinates(city);
+        var cityData = await _geocodingApiProvider.GetCityCoordinates(city);
         var cityCoordinates = _cityCoordinatesJsonProcessor.Process(cityData);
 
         var url =
             $"https://api.sunrise-sunset.org/json?lat={cityCoordinates.Latitude}&lng={cityCoordinates.Longitude}&date={date}";
-        using var client = new WebClient();
+        using var client = new HttpClient();
         
         _logger.LogInformation($"Calling OpenWeather API with url: {url}");
-        return client.DownloadString(url);
+        var response = await client.GetAsync(url);
+        return await response.Content.ReadAsStringAsync();
     }
 }

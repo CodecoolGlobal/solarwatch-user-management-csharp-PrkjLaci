@@ -21,11 +21,11 @@ public class CityCoordinateController : ControllerBase
     }
     
     [HttpGet("GetCityCoordinates")]
-    public ActionResult GetCityCoordinates(string city)
+    public async Task<ActionResult> GetCityCoordinates(string city)
     {
         try
         {
-            var cityCoordinates = _geocodingApiProvider.GetCityCoordinates(city);
+            var cityCoordinates = await _geocodingApiProvider.GetCityCoordinates(city);
             return Ok(_cityCoordinatesJsonProcessor.Process(cityCoordinates));
         }
         catch (Exception e)

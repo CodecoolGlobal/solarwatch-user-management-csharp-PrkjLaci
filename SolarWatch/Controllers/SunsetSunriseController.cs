@@ -29,13 +29,11 @@ public class SunsetSunriseController : ControllerBase
     }
     
     [HttpGet("GetSunsetSunrise")]
-    public ActionResult GetSunsetSunrise(string city, string date)
+    public async Task<ActionResult> GetSunsetSunrise(string city, string date)
     {
         try
         {
-            var cityData = _geocodingApiProvider.GetCityCoordinates(city);
-            var cityCoordinates = _cityCoordinatesJsonProcessor.Process(cityData);
-            var sunsetSunriseData = _sunsetSunriseApiProvider.GetSunsetSunrise(city, date);
+            var sunsetSunriseData = await _sunsetSunriseApiProvider.GetSunsetSunrise(city, date);
             return Ok(_sunsetSunriseJsonProcessor.Process(sunsetSunriseData));
         }
         catch (Exception e)

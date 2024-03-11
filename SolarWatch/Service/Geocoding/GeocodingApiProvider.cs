@@ -10,14 +10,15 @@ public class GeocodingApiProvider : IGeocodingApiProvider
     {
         _logger = logger;
     }
-    public string GetCityCoordinates(string city)
+    public async Task<string> GetCityCoordinates(string city)
     {
         var apiKey = "ba0dd16bccd1e4d44407f12d6caf35da";
         var url = $"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}";
 
-        using var client = new WebClient();
+        using var client = new HttpClient();
         
         _logger.LogInformation("Calling OpenWeather API with url: {url}", url);
-        return client.DownloadString(url);
+        var response = await client.GetAsync(url);
+        return await response.Content.ReadAsStringAsync();
     }
 }
