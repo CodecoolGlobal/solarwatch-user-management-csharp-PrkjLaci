@@ -9,21 +9,25 @@ public class CityCoordinateController : ControllerBase
 {
     private readonly ILogger<CityCoordinateController> _logger;
     private readonly IGeocodingApiProvider _geocodingApiProvider;
+    private readonly ICityCoordinatesJsonProcessor _cityCoordinatesJsonProcessor;
     
-    public CityCoordinateController(ILogger<CityCoordinateController> logger, IGeocodingApiProvider geocodingApiProvider)
+    public CityCoordinateController(ILogger<CityCoordinateController> logger, 
+        IGeocodingApiProvider geocodingApiProvider,
+        ICityCoordinatesJsonProcessor cityCoordinatesJsonProcessor)
     {
         _logger = logger;
         _geocodingApiProvider = geocodingApiProvider;
+        _cityCoordinatesJsonProcessor = cityCoordinatesJsonProcessor;
     }
     
     [HttpGet("GetCityCoordinates")]
-    public IActionResult GetCityCoordinates(string city)
+    public ActionResult GetCityCoordinates(string city)
     {
         try
         {
             var cityCoordinates = _geocodingApiProvider.GetCityCoordinates(city);
             _logger.LogInformation("City coordinates: {cityCoordinates}", cityCoordinates);
-            return Ok(cityCoordinates);
+            return Ok(_cityCoordinatesJsonProcessor.Process(cityCoordinates));
         }
         catch (Exception e)
         {
