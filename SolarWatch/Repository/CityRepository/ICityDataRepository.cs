@@ -1,7 +1,7 @@
 ﻿namespace SolarWatch.Repository.CityRepository;
-
+using Models;
 public interface ICityDataRepository
 {
-    public Models.City? GetCityData(string city);
-    public void SaveCityData(Models.City city);
+    public Task<City?> GetCityData(string city);
+    public Task SaveCityData(Models.City city);
 }

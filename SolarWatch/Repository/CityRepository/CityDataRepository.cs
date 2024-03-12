@@ -1,4 +1,6 @@
-﻿using SolarWatch.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SolarWatch.Data;
+using SolarWatch.Models;
 
 namespace SolarWatch.Repository.CityRepository;
 
@@ -11,20 +13,20 @@ public class CityDataRepository : ICityDataRepository
         _logger = logger;
     }
     
-    public Models.City? GetCityData(string city)
+    public async Task<City?> GetCityData(string city)
     {
-        using var dbContext = new SolarWatchContext();
-        return dbContext.CityData.FirstOrDefault(c => c.CityName == city);
+        await using var dbContext = new SolarWatchContext();
+        return await dbContext.CityData.FirstOrDefaultAsync(c => c.CityName == city);
     }
 
-    public void SaveCityData(Models.City city)
+    public async Task SaveCityData(City city)
     {
-        using var dbContext = new SolarWatchContext();
-        var cityDataEntity = dbContext.CityData.FirstOrDefault(c => c.CityName == city.CityName);
+        await using var dbContext = new SolarWatchContext();
+        var cityDataEntity = await dbContext.CityData.FirstOrDefaultAsync(c => c.CityName == city.CityName);
 
         if (cityDataEntity is null)
         {
-            cityDataEntity = new Models.City
+            cityDataEntity = new City
             {
                 CityName = city.CityName,
                 Latitude = city.Latitude,
@@ -32,12 +34,12 @@ public class CityDataRepository : ICityDataRepository
                 State = city.State,
                 Country = city.Country
             };
-            dbContext.CityData.Add(cityDataEntity);
+            await dbContext.CityData.AddAsync(cityDataEntity);
         }
         else
         {
             _logger.LogInformation($"City: {city.CityName} already exists in the database.");
         }
-        dbContext.SaveChanges();
+        await dbContext.SaveChangesAsync();
     }
 }
