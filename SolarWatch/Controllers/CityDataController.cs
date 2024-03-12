@@ -40,12 +40,12 @@ public class CityDataController : ControllerBase
             
             await _cityDataRepository.SaveCityData(cityEntity);
             
-            return Ok(cityEntity);
+            return Ok(new { message = $"Successfully get city data.", data = cityEntity });
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Error getting city coordinates");
-            return BadRequest("Error getting city coordinates");
+            return BadRequest(new { message = "Error getting city coordinates" });
         }
     }
 }

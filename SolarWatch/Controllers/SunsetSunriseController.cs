@@ -44,7 +44,7 @@ public class SunsetSunriseController : ControllerBase
             
             if (sunsetSunriseTime is not null && cityData is not null)
             {
-                return Ok(sunsetSunriseTime);
+                return Ok(new { message = "Successfully get the sunset and the sunrise.", data = sunsetSunriseTime });
             }
             
             var sunsetSunriseFromApi = await _sunsetSunriseApiProvider.GetSunsetSunrise(city, date);
@@ -56,12 +56,12 @@ public class SunsetSunriseController : ControllerBase
             
            await _sunsetSunriseRepository.SaveSunsetSunrise(cityEntity, sunsetSunriseEntity);
             
-            return Ok(sunsetSunriseEntity);
+            return Ok(new { message = "Successfully get the sunset and the sunrise.", data = sunsetSunriseEntity});
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error getting sunset sunrise data");
-            return BadRequest("Error getting sunset sunrise data");
+            _logger.LogError(e, "Error getting sunset and sunrise data");
+            return BadRequest(new { message = "Error getting sunset and sunrise data" });
         }
     }
 
