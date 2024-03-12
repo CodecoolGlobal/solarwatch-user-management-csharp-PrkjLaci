@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SolarWatch.Repository.City;
+using SolarWatch.Repository.CityRepository;
 using SolarWatch.Service.Geocoding;
 
 namespace SolarWatch.Controllers;

@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿namespace SolarWatch.Models;
 
-namespace SolarWatch.Models;
-
-public class CityData
+public class City
 {
     public int Id { get; set; }
     public string? CityName { get; set; }
@@ -11,7 +9,6 @@ public class CityData
     public string? State { get; set; }
     public string? Country { get; set; }
     
-    [ForeignKey("SunsetSunriseTime")]
     public int SunsetSunriseTimeId { get; set; }
     public SunsetSunriseTime? SunsetSunriseTime { get; set; }
 }
