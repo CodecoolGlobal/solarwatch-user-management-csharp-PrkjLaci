@@ -29,7 +29,7 @@ public class CityDataController : ControllerBase
     {
         try
         {
-            var cityData = _cityDataRepository.GetCityData(city);
+            var cityData = await _cityDataRepository.GetCityData(city);
             
             if(cityData != null)
             {
@@ -38,7 +38,7 @@ public class CityDataController : ControllerBase
             var cityDataFromApi = await _geocodingApiProvider.GetCityCoordinates(city);
             var cityEntity = _cityCoordinatesJsonProcessor.Process(cityDataFromApi);
             
-            _cityDataRepository.SaveCityData(cityEntity);
+            await _cityDataRepository.SaveCityData(cityEntity);
             
             return Ok(cityEntity);
         }
