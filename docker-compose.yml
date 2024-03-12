@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  server:
+    image: server_solarwatch
+    build:
+      context: ./SolarWatch
+      dockerfile: Dockerfile
+    ports:
+      - "5071:80"
+    environment:
+        - ASPNETCORE_URLS=http://+:80
+    env_file:
+      - ./.envs/server.env
+      - ./.envs/openweather_api.env
+    depends_on:
+      - database
+        
+  database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    env_file:
+      - ./.envs/db.env
+    ports:
+      - "1433:1433"
