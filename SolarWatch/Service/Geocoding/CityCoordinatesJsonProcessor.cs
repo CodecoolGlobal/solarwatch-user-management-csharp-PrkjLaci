@@ -7,14 +7,14 @@ namespace SolarWatch.Service.Geocoding
 {
     public class CityCoordinatesJsonProcessor : ICityCoordinatesJsonProcessor
     {
-        public CityData Process(string data)
+        public City Process(string data)
         {
             JsonDocument json = JsonDocument.Parse(data);
             JsonElement root = json.RootElement;
           
             JsonElement cityElement = root[0];
 
-            CityData cityData = new CityData
+            City city = new City
             {
                 CityName = cityElement.GetProperty("name").GetString(),
                 Latitude = cityElement.GetProperty("lat").GetDouble(),
@@ -24,14 +24,14 @@ namespace SolarWatch.Service.Geocoding
             
             if(cityElement.TryGetProperty("state", out JsonElement stateElement))
             {
-                cityData.State = stateElement.GetString();
+                city.State = stateElement.GetString();
             }
             else
             {
-                cityData.State = null;
+                city.State = null;
             }
             
-            return cityData;
+            return city;
         }
     }
 }

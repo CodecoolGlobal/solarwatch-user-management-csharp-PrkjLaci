@@ -1,11 +1,18 @@
 using SolarWatch.Service.Geocoding;
 using SolarWatch.Service.SunsetSunRise;
 using dotenv.net;
-using SolarWatch.Repository.City;
+using SolarWatch.Repository.CityRepository;
+using SolarWatch.Repository.SunsetSunriseRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 DotEnv.Load();
 // Add services to the container.
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    });
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -16,6 +23,8 @@ builder.Services.AddTransient<ICityCoordinatesJsonProcessor, CityCoordinatesJson
 builder.Services.AddTransient<ICityDataRepository, CityDataRepository>();
 builder.Services.AddTransient<ISunsetSunriseApiProvider, SunsetSunriseApiProvider>();
 builder.Services.AddTransient<ISunsetSunriseJsonProcessor, SunsetSunriseJsonProcessor>();
+builder.Services.AddTransient<ISunsetSunriseRepository, SunsetSunriseRepository>();
+
 
 var app = builder.Build();
 
