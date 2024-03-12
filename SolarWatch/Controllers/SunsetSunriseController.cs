@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SolarWatch.Repository.CityRepository;
+using SolarWatch.Repository.SunsetSunriseRepository;
 using SolarWatch.Service.Geocoding;
 using SolarWatch.Service.SunsetSunRise;
 
@@ -8,24 +10,28 @@ namespace SolarWatch.Controllers;
 public class SunsetSunriseController : ControllerBase
 {
     private readonly ILogger<SunsetSunriseController> _logger;
-    
-    private readonly IGeocodingApiProvider _geocodingApiProvider;
-    private readonly ICityCoordinatesJsonProcessor _cityCoordinatesJsonProcessor;
-
     private readonly ISunsetSunriseApiProvider _sunsetSunriseApiProvider;
     private readonly ISunsetSunriseJsonProcessor _sunsetSunriseJsonProcessor;
+    private readonly ISunsetSunriseRepository _sunsetSunriseRepository;
+    private readonly ICityDataRepository _cityDataRepository;
+    private readonly IGeocodingApiProvider _geocodingApiProvider;
+    private readonly ICityCoordinatesJsonProcessor _cityCoordinatesJsonProcessor;
     
     public SunsetSunriseController(ILogger<SunsetSunriseController> logger, 
-        IGeocodingApiProvider geocodingApiProvider,
-        ICityCoordinatesJsonProcessor cityCoordinatesJsonProcessor,
         ISunsetSunriseApiProvider sunsetSunriseApiProvider,
-        ISunsetSunriseJsonProcessor sunsetSunriseJsonProcessor)
+        ISunsetSunriseJsonProcessor sunsetSunriseJsonProcessor,
+        ISunsetSunriseRepository sunsetSunriseRepository,
+        ICityDataRepository cityDataRepository,
+        IGeocodingApiProvider geocodingApiProvider,
+        ICityCoordinatesJsonProcessor cityCoordinatesJsonProcessor)
     {
         _logger = logger;
-        _geocodingApiProvider = geocodingApiProvider;
-        _cityCoordinatesJsonProcessor = cityCoordinatesJsonProcessor;
         _sunsetSunriseApiProvider = sunsetSunriseApiProvider;
         _sunsetSunriseJsonProcessor = sunsetSunriseJsonProcessor;
+        _sunsetSunriseRepository = sunsetSunriseRepository;
+        _cityDataRepository = cityDataRepository;
+        _geocodingApiProvider = geocodingApiProvider;
+        _cityCoordinatesJsonProcessor = cityCoordinatesJsonProcessor;
     }
     
     [HttpGet("GetSunsetSunrise")]
@@ -33,8 +39,24 @@ public class SunsetSunriseController : ControllerBase
     {
         try
         {
-            var sunsetSunriseData = await _sunsetSunriseApiProvider.GetSunsetSunrise(city, date);
-            return Ok(_sunsetSunriseJsonProcessor.Process(sunsetSunriseData));
+            var sunsetSunriseTime = await _sunsetSunriseRepository.GetSunsetSunrise(city, date);
+            var cityData = await _cityDataRepository.GetCityData(city);
+            
+            if (sunsetSunriseTime is not null && cityData is not null)
+            {
+                return Ok(sunsetSunriseTime);
+            }
+            
+            var sunsetSunriseFromApi = await _sunsetSunriseApiProvider.GetSunsetSunrise(city, date);
+            var sunsetSunriseEntity = _sunsetSunriseJsonProcessor.Process(sunsetSunriseFromApi);
+            sunsetSunriseEntity.Date = date;
+            
+            var cityFromApi = await _geocodingApiProvider.GetCityCoordinates(city);
+            var cityEntity = _cityCoordinatesJsonProcessor.Process(cityFromApi);
+            
+           await _sunsetSunriseRepository.SaveSunsetSunrise(cityEntity, sunsetSunriseEntity);
+            
+            return Ok(sunsetSunriseEntity);
         }
         catch (Exception e)
         {
@@ -42,4 +64,5 @@ public class SunsetSunriseController : ControllerBase
             return BadRequest("Error getting sunset sunrise data");
         }
     }
+
 }
