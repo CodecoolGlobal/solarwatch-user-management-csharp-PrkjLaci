@@ -5,14 +5,14 @@ namespace SolarWatch.Data;
 
 public class SolarWatchContext : DbContext
 {
+    private readonly IConfiguration _configuration;
     public DbSet<City> CityData { get; set; }
     public DbSet<SunsetSunriseTime> SunsetSunriseTime { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(
-            "Server=localhost,1433;Database=SolarWatch;User Id=sa;Password=Codecool12__;Encrypt=false;"
-        );
+        string? connectionString = _configuration["DB_CONNECTION_STRING"];
+        optionsBuilder.UseSqlServer(connectionString);
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
