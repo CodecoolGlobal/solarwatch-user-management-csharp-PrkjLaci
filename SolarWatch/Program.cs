@@ -1,13 +1,24 @@
+using System.Text;
 using SolarWatch.Service.Geocoding;
 using SolarWatch.Service.SunsetSunRise;
 using dotenv.net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using SolarWatch.Data;
 using SolarWatch.Repository.CityRepository;
 using SolarWatch.Repository.SunsetSunriseRepository;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
+DotEnv.Load();
+
+AddServices();
+ConfigureSwagger();
+AddDbContext();
+AddAuthentication(configuration);
+AddIdentity();
+
 var app = builder.Build();
 
 DotEnv.Load();
@@ -83,7 +94,7 @@ void AddDbContext()
     builder.Services.AddDbContext<SolarWatchContext>();
 }
 
-void AddAuthentication()
+void AddAuthentication(IConfiguration configuration)
 {
     builder.Services
         .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -96,6 +107,11 @@ void AddAuthentication()
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = configuration["JwtAuthentication:ValidIssuer"],
+                ValidAudience = configuration["JwtAuthentication:ValidAudience"],
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(configuration["JwtOptions:IssuerSigningKey"]))
             };
         });
 }
