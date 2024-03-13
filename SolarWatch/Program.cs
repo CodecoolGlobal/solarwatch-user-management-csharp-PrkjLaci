@@ -20,13 +20,11 @@ AddAuthentication(configuration);
 AddIdentity();
 
 var app = builder.Build();
-
-DotEnv.Load();
-
-AddServices();
-ConfigureSwagger();
-AddAuthentication();
-AddIdentity();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 
 app.UseHttpsRedirection();
@@ -40,11 +38,10 @@ app.Run();
 
 void AddServices()
 {
-    builder.Services.AddHttpClient();
-    builder.Services.AddControllers(
-        options =>
-            options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
-    builder.Services.AddControllers()
+    builder.Services.AddControllers(options =>
+        {
+            options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+        })
         .AddJsonOptions(options =>
         {
             options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
@@ -106,7 +103,6 @@ void AddAuthentication(IConfiguration configuration)
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateLifetime = true,
-                ValidateIssuerSigningKey = true
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = configuration["JwtAuthentication:ValidIssuer"],
                 ValidAudience = configuration["JwtAuthentication:ValidAudience"],
