@@ -55,6 +55,7 @@ void AddServices()
     builder.Services.AddSingleton<ISunsetSunriseJsonProcessor, SunsetSunriseJsonProcessor>();
     builder.Services.AddSingleton<ISunsetSunriseRepository, SunsetSunriseRepository>();
     builder.Services.AddScoped<IAuthService, AuthService>();
+    builder.Services.AddScoped<ITokenService, TokenService>();
     builder.Services.AddEndpointsApiExplorer();
 }
 
