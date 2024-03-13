@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SolarWatch.Repository.CityRepository;
 using SolarWatch.Repository.SunsetSunriseRepository;
 using SolarWatch.Service.Geocoding;
@@ -34,7 +35,7 @@ public class SunsetSunriseController : ControllerBase
         _cityCoordinatesJsonProcessor = cityCoordinatesJsonProcessor;
     }
     
-    [HttpGet("GetSunsetSunrise")]
+    [HttpGet("GetSunsetSunrise"), Authorize]
     public async Task<ActionResult> GetSunsetSunrise(string city, string date)
     {
         try
