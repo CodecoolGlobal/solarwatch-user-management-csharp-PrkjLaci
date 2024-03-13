@@ -89,6 +89,7 @@ void ConfigureSwagger()
 void AddDbContext()
 {
     builder.Services.AddDbContext<SolarWatchContext>();
+    builder.Services.AddDbContext<UsersContext>();
 }
 
 void AddAuthentication(IConfiguration configuration)
