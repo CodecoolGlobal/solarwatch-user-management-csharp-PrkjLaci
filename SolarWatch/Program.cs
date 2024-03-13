@@ -1,39 +1,22 @@
 using SolarWatch.Service.Geocoding;
 using SolarWatch.Service.SunsetSunRise;
 using dotenv.net;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using SolarWatch.Data;
 using SolarWatch.Repository.CityRepository;
 using SolarWatch.Repository.SunsetSunriseRepository;
 
 var builder = WebApplication.CreateBuilder(args);
-DotEnv.Load();
-// Add services to the container.
-
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-    });
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddTransient<IGeocodingApiProvider, GeocodingApiProvider>();
-builder.Services.AddTransient<ICityCoordinatesJsonProcessor, CityCoordinatesJsonProcessor>();
-builder.Services.AddTransient<ICityDataRepository, CityDataRepository>();
-builder.Services.AddTransient<ISunsetSunriseApiProvider, SunsetSunriseApiProvider>();
-builder.Services.AddTransient<ISunsetSunriseJsonProcessor, SunsetSunriseJsonProcessor>();
-builder.Services.AddTransient<ISunsetSunriseRepository, SunsetSunriseRepository>();
-
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+DotEnv.Load();
+
+AddServices();
+ConfigureSwagger();
+AddAuthentication();
+AddIdentity();
+
 
 app.UseHttpsRedirection();
 
@@ -42,3 +25,47 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+void AddServices()
+{
+    builder.Services.AddHttpClient();
+    builder.Services.AddControllers(
+        options =>
+            options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
+    builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+        });
+    builder.Services.AddSingleton<IGeocodingApiProvider, GeocodingApiProvider>();
+    builder.Services.AddSingleton<ICityCoordinatesJsonProcessor, CityCoordinatesJsonProcessor>();
+    builder.Services.AddSingleton<ICityDataRepository, CityDataRepository>();
+    builder.Services.AddSingleton<ISunsetSunriseApiProvider, SunsetSunriseApiProvider>();
+    builder.Services.AddSingleton<ISunsetSunriseJsonProcessor, SunsetSunriseJsonProcessor>();
+    builder.Services.AddSingleton<ISunsetSunriseRepository, SunsetSunriseRepository>();
+    builder.Services.AddEndpointsApiExplorer();
+}
+
+void ConfigureSwagger()
+{
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+}
+
+void AddDbContext()
+{
+    builder.Services.AddDbContext<SolarWatchContext>();
+}
+
+void AddAuthentication()
+{
+    
+}
+
+void AddIdentity()
+{
+    
+}
