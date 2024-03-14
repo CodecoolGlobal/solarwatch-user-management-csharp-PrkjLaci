@@ -22,6 +22,11 @@ AddAuthentication(configuration);
 AddIdentity();
 
 var app = builder.Build();
+
+using var scope = app.Services.CreateScope();
+var authenticationSeeder = scope.ServiceProvider.GetRequiredService<AuthenticationSeeder>();
+authenticationSeeder.AddRoles();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -56,6 +61,7 @@ void AddServices()
     builder.Services.AddSingleton<ISunsetSunriseRepository, SunsetSunriseRepository>();
     builder.Services.AddScoped<IAuthService, AuthService>();
     builder.Services.AddScoped<ITokenService, TokenService>();
+    builder.Services.AddScoped<AuthenticationSeeder>();
     builder.Services.AddEndpointsApiExplorer();
 }
 
