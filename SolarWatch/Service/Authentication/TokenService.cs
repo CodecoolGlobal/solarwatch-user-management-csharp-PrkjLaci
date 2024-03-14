@@ -17,11 +17,11 @@ public class TokenService : ITokenService
         _configuration = configuration;
     }
 
-    public string CreateToken(IdentityUser user)
+    public string CreateToken(IdentityUser user, string? role)
     {
         var expiration = DateTime.UtcNow.AddMinutes(ExpirationMinutes);
         var token = CreateJwtToken(
-            CreateClaims(user),
+            CreateClaims(user, role),
             CreateSigningCredentials(),
             expiration
             );
@@ -39,7 +39,7 @@ public class TokenService : ITokenService
             signingCredentials: credentials
         );
 
-    private List<Claim> CreateClaims(IdentityUser user)
+    private List<Claim> CreateClaims(IdentityUser user, string? role)
     {
         try
         {
@@ -52,6 +52,12 @@ public class TokenService : ITokenService
                 new(ClaimTypes.Name, user.UserName),
                 new(ClaimTypes.Email, user.Email)
             };
+
+            if (role != null)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+            
             return claims;
         }
         catch (Exception e)
