@@ -9,6 +9,11 @@ public class SolarWatchContext : DbContext
     public DbSet<City> CityData { get; set; }
     public DbSet<SunsetSunriseTime> SunsetSunriseTime { get; set; }
 
+    public SolarWatchContext(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         string? connectionString = _configuration["DB_CONNECTION_STRING"];
