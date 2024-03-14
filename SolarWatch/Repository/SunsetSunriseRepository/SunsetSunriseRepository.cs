@@ -7,21 +7,23 @@ namespace SolarWatch.Repository.SunsetSunriseRepository;
 public class SunsetSunriseRepository : ISunsetSunriseRepository
 {
     private readonly ILogger<SunsetSunriseRepository> _logger;
+    private readonly IConfiguration _configuration;
     
-    public SunsetSunriseRepository(ILogger<SunsetSunriseRepository> logger)
+    public SunsetSunriseRepository(ILogger<SunsetSunriseRepository> logger, IConfiguration configuration)
     {
         _logger = logger;
+        _configuration = configuration;
     }
     
     public async Task<SunsetSunriseTime?> GetSunsetSunrise(string city, string date)
     {
-        await using var dbContext = new SolarWatchContext();
+        await using var dbContext = new SolarWatchContext(_configuration);
         return await dbContext.SunsetSunriseTime.FirstOrDefaultAsync(c => c.City != null && c.City.CityName == city && c.Date == date);
     }
 
     public async Task SaveSunsetSunrise(City? city, SunsetSunriseTime sunsetSunrise)
     {
-        await using var dbContext = new SolarWatchContext();
+        await using var dbContext = new SolarWatchContext(_configuration);
         var cityEntity = await dbContext.CityData.FirstOrDefaultAsync(c => city != null && c.Id == city.Id);
 
         if (cityEntity is null)
