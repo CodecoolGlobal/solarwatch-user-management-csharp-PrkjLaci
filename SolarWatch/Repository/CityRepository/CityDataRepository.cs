@@ -7,21 +7,23 @@ namespace SolarWatch.Repository.CityRepository;
 public class CityDataRepository : ICityDataRepository
 {
     private readonly ILogger<CityDataRepository> _logger;
+    private readonly IConfiguration _configuration;
     
-    public CityDataRepository(ILogger<CityDataRepository> logger)
+    public CityDataRepository(ILogger<CityDataRepository> logger, IConfiguration configuration)
     {
         _logger = logger;
+        _configuration = configuration;
     }
     
     public async Task<City?> GetCityData(string city)
     {
-        await using var dbContext = new SolarWatchContext();
+        await using var dbContext = new SolarWatchContext(_configuration);
         return await dbContext.CityData.FirstOrDefaultAsync(c => c.CityName == city);
     }
 
     public async Task SaveCityData(City city)
     {
-        await using var dbContext = new SolarWatchContext();
+        await using var dbContext = new SolarWatchContext(_configuration);
         var cityDataEntity = await dbContext.CityData.FirstOrDefaultAsync(c => c.CityName == city.CityName);
 
         if (cityDataEntity is null)

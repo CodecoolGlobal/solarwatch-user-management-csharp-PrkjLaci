@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SolarWatch.Repository.CityRepository;
 using SolarWatch.Service.Geocoding;
 
@@ -24,7 +25,7 @@ public class CityDataController : ControllerBase
         _cityDataRepository = cityDataRepository;
     }
     
-    [HttpGet("GetCityCoordinates")]
+    [HttpGet("GetCityCoordinates"), Authorize]
     public async Task<ActionResult> GetCityCoordinates(string city)
     {
         try
