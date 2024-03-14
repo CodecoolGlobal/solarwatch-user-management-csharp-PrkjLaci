@@ -16,8 +16,7 @@ public class AuthService : IAuthService
     public async Task<AuthResult> RegisterAsync(string email, string username, string password, string role)
     {
         var user = new IdentityUser { UserName = username, Email = email };
-        var result = await _userManager.CreateAsync(
-            new IdentityUser { UserName = username, Email = email }, password);
+        var result = await _userManager.CreateAsync(user, password);
 
         if (!result.Succeeded)
         {
@@ -45,6 +44,8 @@ public class AuthService : IAuthService
         }
 
         var roles = await _userManager.GetRolesAsync(managedUser);
+        Console.WriteLine("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+        Console.WriteLine(roles[0]);
         var accessToken = _tokenService.CreateToken(managedUser, roles[0]);
 
         return new AuthResult(true, managedUser.Email, managedUser.UserName, accessToken);
