@@ -26,6 +26,7 @@ var app = builder.Build();
 using var scope = app.Services.CreateScope();
 var authenticationSeeder = scope.ServiceProvider.GetRequiredService<AuthenticationSeeder>();
 authenticationSeeder.AddRoles();
+authenticationSeeder.AddAdmin();
 
 if (app.Environment.IsDevelopment())
 {
@@ -53,12 +54,12 @@ void AddServices()
         {
             options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
         });
-    builder.Services.AddSingleton<IGeocodingApiProvider, GeocodingApiProvider>();
-    builder.Services.AddSingleton<ICityCoordinatesJsonProcessor, CityCoordinatesJsonProcessor>();
-    builder.Services.AddSingleton<ICityDataRepository, CityDataRepository>();
-    builder.Services.AddSingleton<ISunsetSunriseApiProvider, SunsetSunriseApiProvider>();
-    builder.Services.AddSingleton<ISunsetSunriseJsonProcessor, SunsetSunriseJsonProcessor>();
-    builder.Services.AddSingleton<ISunsetSunriseRepository, SunsetSunriseRepository>();
+    builder.Services.AddScoped<IGeocodingApiProvider, GeocodingApiProvider>();
+    builder.Services.AddScoped<ICityCoordinatesJsonProcessor, CityCoordinatesJsonProcessor>();
+    builder.Services.AddScoped<ICityDataRepository, CityDataRepository>();
+    builder.Services.AddScoped<ISunsetSunriseApiProvider, SunsetSunriseApiProvider>();
+    builder.Services.AddScoped<ISunsetSunriseJsonProcessor, SunsetSunriseJsonProcessor>();
+    builder.Services.AddScoped<ISunsetSunriseRepository, SunsetSunriseRepository>();
     builder.Services.AddScoped<IAuthService, AuthService>();
     builder.Services.AddScoped<ITokenService, TokenService>();
     builder.Services.AddScoped<AuthenticationSeeder>();

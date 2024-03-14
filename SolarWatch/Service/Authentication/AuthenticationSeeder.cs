@@ -34,6 +34,12 @@ public class AuthenticationSeeder
         await roleManager.CreateAsync(new IdentityRole(configuration["Roles:UserRoleName"]));
     }
     
+    public void AddAdmin()
+    {
+        var tAdmin = CreateAdminIfNotExists();
+        tAdmin.Wait();
+    }
+    
     private async Task CreateAdminIfNotExists()
     {
         var adminInDb = await userManager.FindByEmailAsync("admin@admin.com");
