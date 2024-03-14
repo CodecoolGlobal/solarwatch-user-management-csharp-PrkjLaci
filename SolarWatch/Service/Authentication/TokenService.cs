@@ -11,7 +11,12 @@ public class TokenService : ITokenService
 {
     private const int ExpirationMinutes = 30;
     private readonly IConfiguration _configuration;
-    
+
+    public TokenService(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
     public string CreateToken(IdentityUser user)
     {
         var expiration = DateTime.UtcNow.AddMinutes(ExpirationMinutes);
