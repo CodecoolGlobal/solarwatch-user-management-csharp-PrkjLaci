@@ -24,10 +24,7 @@ public class SunsetSunriseRepository : ISunsetSunriseRepository
     public async Task SaveSunsetSunrise(City? city, SunsetSunriseTime sunsetSunrise)
     {
         await using var dbContext = new SolarWatchContext(_configuration);
-        var cityEntity = await dbContext.CityData.FirstOrDefaultAsync(c => city != null 
-                                                                           && c.CityName == city.CityName 
-                                                                           && Math.Abs(c.Longitude - city.Longitude) < 10
-                                                                           && Math.Abs(c.Latitude - city.Latitude) < 10);
+        var cityEntity = await dbContext.CityData.FirstOrDefaultAsync(c => city != null && c.CityName == city.CityName);
 
         if (cityEntity is null)
         { 
@@ -44,7 +41,6 @@ public class SunsetSunriseRepository : ISunsetSunriseRepository
         sunsetSunrise.CityId = cityEntity.Id;
         await dbContext.SunsetSunriseTime.AddAsync(sunsetSunrise);
 
-        cityEntity.SunsetSunriseTimeId = sunsetSunrise.Id;
         
         await dbContext.SaveChangesAsync();
     }
