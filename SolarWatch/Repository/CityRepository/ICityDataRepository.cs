@@ -3,5 +3,6 @@ using Models;
 public interface ICityDataRepository
 {
     public Task<City?> GetCityData(string city);
-    public Task SaveCityData(Models.City city);
+    void AddCityData(City city);
+    public Task SaveCityData(City city);
 }
