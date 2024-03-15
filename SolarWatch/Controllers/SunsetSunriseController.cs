@@ -35,7 +35,7 @@ public class SunsetSunriseController : ControllerBase
         _cityCoordinatesJsonProcessor = cityCoordinatesJsonProcessor;
     }
     
-    [HttpGet("GetSunsetSunrise"), Authorize]
+    [HttpGet("GetSunsetSunrise"), Authorize(Roles = "Admin, User")]
     public async Task<ActionResult> GetSunsetSunrise(string city, string date)
     {
         try
