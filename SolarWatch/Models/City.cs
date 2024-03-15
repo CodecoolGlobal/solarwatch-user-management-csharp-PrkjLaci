@@ -8,7 +8,5 @@ public class City
     public double Longitude { get; set; }
     public string? State { get; set; }
     public string? Country { get; set; }
-    
-    public int SunsetSunriseTimeId { get; set; }
-    public SunsetSunriseTime? SunsetSunriseTime { get; set; }
+    public List<SunsetSunriseTime?> SunsetSunriseTime { get; set; }
 }
