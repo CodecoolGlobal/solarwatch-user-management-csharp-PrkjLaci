@@ -26,10 +26,14 @@ public class SolarWatchContext : DbContext
             .HasIndex(u => u.State)
             .IsUnique();
         
-        modelBuilder.Entity<City>()
-            .HasOne(c => c.SunsetSunriseTime)
-            .WithOne(s => s.City)
-            .HasForeignKey<SunsetSunriseTime>(s => s.Id);
+        modelBuilder.Entity<SunsetSunriseTime>()
+            .HasOne(s => s.City)
+            .WithMany(c => c.SunsetSunriseTime)
+            .HasForeignKey(s => s.CityId);
+        
+        modelBuilder.Entity<SunsetSunriseTime>()
+            .Property(p => p.Id)
+            .ValueGeneratedOnAdd();
     }
     
 }

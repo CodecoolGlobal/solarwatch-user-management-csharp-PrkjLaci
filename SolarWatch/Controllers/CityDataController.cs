@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SolarWatch.Models;
 using SolarWatch.Repository.CityRepository;
 using SolarWatch.Service.Geocoding;
 
@@ -25,7 +26,7 @@ public class CityDataController : ControllerBase
         _cityDataRepository = cityDataRepository;
     }
     
-    [HttpGet("GetCityCoordinates"), Authorize]
+    [HttpGet("GetCityCoordinates"), Authorize(Roles = "Admin, User")]
     public async Task<ActionResult> GetCityCoordinates(string city)
     {
         try
@@ -49,4 +50,52 @@ public class CityDataController : ControllerBase
             return BadRequest(new { message = "Error getting city coordinates" });
         }
     }
+    
+    [HttpPost("AddCityData"), Authorize(Roles = "Admin")] 
+    public async Task<ActionResult> AddCityData(City cityData)
+    {
+        try
+        {
+            await _cityDataRepository.AddCityData(cityData);
+            await _cityDataRepository.SaveCityData(cityData);
+            return Ok(new { message = "City data added.", data = cityData });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "City data already exists.");
+            return BadRequest(new { message = "City data already exists." });
+        }
+    }
+    
+    [HttpPatch("UpdateCityData"), Authorize(Roles = "Admin")]
+    public async Task<ActionResult> UpdateCityData(City cityData)
+    {
+        try
+        {
+            var updatedCityData = await _cityDataRepository.UpdateCityData(cityData);
+            await _cityDataRepository.SaveCityData(updatedCityData);
+            return Ok(new { message = "City data updated.", data = updatedCityData });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "City data not found.");
+            return NotFound(new { message = "City data not found." });
+        }
+    }
+    
+    [HttpDelete("DeleteCityData/{cityId}"), Authorize(Roles = "Admin")]
+    public async Task<ActionResult> DeleteCityData(int cityId)
+    {
+        try
+        {
+            await _cityDataRepository.DeleteCityData(cityId);
+            return Ok(new { message = "City data deleted." });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "City data not found.");
+            return NotFound(new { message = "City data not found." });
+        }
+    }
+    
 }
