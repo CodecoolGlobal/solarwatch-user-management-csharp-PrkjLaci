@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SolarWatch.Models;
 using SolarWatch.Repository.CityRepository;
 using SolarWatch.Repository.SunsetSunriseRepository;
 using SolarWatch.Service.Geocoding;
@@ -63,6 +64,51 @@ public class SunsetSunriseController : ControllerBase
         {
             _logger.LogError(e, "Error getting sunset and sunrise data");
             return BadRequest(new { message = "Error getting sunset and sunrise data" });
+        }
+    }
+    
+    [HttpPost("AddSunsetSunrise"), Authorize(Roles = "Admin")]
+    public async Task<ActionResult> AddSunsetSunrise(SunsetSunriseTime sunsetSunrise, int cityId)
+    {
+        try
+        {
+            await _sunsetSunriseRepository.AddSunsetSunrise(sunsetSunrise, cityId);
+            return Ok(new { message = "Sunset and sunrise added.", data = sunsetSunrise });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Sunset and sunrise already exists.");
+            return BadRequest(new { message = "Sunset and sunrise already exists." });
+        }
+    }
+    
+    [HttpPatch("UpdateSunsetSunrise"), Authorize(Roles = "Admin")]
+    public async Task<ActionResult> UpdateSunsetSunrise(SunsetSunriseTime sunsetSunrise, int cityId, int sunsetSunriseId)
+    {
+        try
+        {
+            var updatedSunsetSunrise = await _sunsetSunriseRepository.UpdateSunsetSunrise(sunsetSunrise, cityId, sunsetSunriseId);
+            return Ok(new { message = "Sunset and sunrise updated.", data = updatedSunsetSunrise });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Sunset and sunrise not found.");
+            return BadRequest(new { message = "Sunset and sunrise not found." });
+        }
+    }
+    
+    [HttpDelete("DeleteSunsetSunrise"), Authorize(Roles = "Admin")]
+    public async Task<ActionResult> DeleteSunsetSunrise(int id)
+    {
+        try
+        {
+            await _sunsetSunriseRepository.DeleteSunsetSunrise(id);
+            return Ok(new { message = "Sunset and sunrise deleted." });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Sunset and sunrise not found.");
+            return BadRequest(new { message = "Sunset and sunrise not found." });
         }
     }
 
