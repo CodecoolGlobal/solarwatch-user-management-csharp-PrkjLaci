@@ -5,14 +5,17 @@ namespace SolarWatch.Service.Geocoding;
 public class GeocodingApiProvider : IGeocodingApiProvider
 {
     private readonly ILogger<GeocodingApiProvider> _logger;
+    private readonly IConfiguration _configuration;
 
-    public GeocodingApiProvider(ILogger<GeocodingApiProvider> logger)
+    public GeocodingApiProvider(ILogger<GeocodingApiProvider> logger, IConfiguration configuration)
     {
         _logger = logger;
+        _configuration = configuration;
     }
+    
     public async Task<string> GetCityCoordinates(string city)
     {
-        var apiKey = Environment.GetEnvironmentVariable("OPENWEATHER_API_KEY");
+        var apiKey = _configuration["OPENWEATHER_API_KEY"];
         Console.WriteLine(apiKey);
         var url = $"https://api.openweathermap.org/geo/1.0/direct?q={city}&appid={apiKey}";
 
