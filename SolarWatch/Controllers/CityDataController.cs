@@ -26,6 +26,13 @@ public class CityDataController : ControllerBase
         _cityDataRepository = cityDataRepository;
     }
     
+    [Authorize(Roles = "Admin")]
+    [HttpGet("GetAllCityData")]
+    public async Task<List<City>> GetAllCityData()
+    {
+        return await _cityDataRepository.GetAllCityData();
+    }
+    
     [HttpGet("GetCityCoordinates"), Authorize(Roles = "Admin, User")]
     public async Task<ActionResult> GetCityCoordinates(string city)
     {
@@ -49,6 +56,17 @@ public class CityDataController : ControllerBase
             _logger.LogError(e, "Error getting city coordinates");
             return BadRequest(new { message = "Error getting city coordinates" });
         }
+    }
+    [Authorize(Roles = "Admin")]
+    [HttpGet("GetCityDataById/{id}")]
+    public async Task<ActionResult> GetCityDataById(int id)
+    {
+        var cityData = await _cityDataRepository.GetCityDataById(id);
+        if (cityData != null)
+        {
+            return Ok(cityData);
+        }
+        return NotFound(new { message = "City data not found." });
     }
     
     [HttpPost("AddCityData"), Authorize(Roles = "Admin")] 
