@@ -27,6 +27,15 @@ using var scope = app.Services.CreateScope();
 var authenticationSeeder = scope.ServiceProvider.GetRequiredService<AuthenticationSeeder>();
 authenticationSeeder.AddRoles();
 authenticationSeeder.AddAdmin();
+var connection ="http://localhost:5173/";
+app.UseCors(b => {
+    b.WithOrigins(connection!)
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()
+        .WithExposedHeaders("content-type") // Allow the 'content-type' header to be exposed
+        .SetIsOriginAllowed(_ => true); // Allow any origin for CORS
+});
 
 if (app.Environment.IsDevelopment())
 {
