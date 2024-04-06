@@ -25,46 +25,55 @@ public class SunsetSunriseRepository : ISunsetSunriseRepository
         await using var dbContext = new SolarWatchContext(_configuration);
         return await dbContext.SunsetSunriseTime.FirstOrDefaultAsync(c => c.City != null && c.City.CityName == city && c.Date == date);
     }
-
-    public async Task AddSunsetSunrise(SunsetSunriseTime sunsetSunrise, int cityId)
+    public async Task<List<SunsetSunriseTime>> GetAllSunsetSunrise()
     {
-        var city = await _dbContext.CityData.Include(city => city.SunsetSunriseTime).FirstOrDefaultAsync(c => c.Id == cityId);
+        return await _dbContext.SunsetSunriseTime.ToListAsync();
+    }
+
+    public async Task AddSunsetSunrise(SunsetSunriseTime sunsetSunrise)
+    {
+        var city = await _dbContext.CityData.Include(city => city.SunsetSunriseTime).FirstOrDefaultAsync(c => c.Id == sunsetSunrise.CityId);
         
         if (city is null)
         {
             throw new Exception("City not found.");
         }
         
-        sunsetSunrise.CityId = city.Id;
         city.SunsetSunriseTime.Add(sunsetSunrise);
-        await _dbContext.SunsetSunriseTime.AddAsync(sunsetSunrise);
+        if (!_dbContext.SunsetSunriseTime.Any(s =>
+                s.Date == sunsetSunrise.Date && s.Sunset == sunsetSunrise.Sunset && s.Sunrise == sunsetSunrise.Sunrise))
+        {
+            await _dbContext.SunsetSunriseTime.AddAsync(sunsetSunrise);
+        }
+        else
+        {
+            throw new Exception("Sunset sunrise already in the database.");
+        }
         await _dbContext.SaveChangesAsync();
         
     }
 
-    public async Task<SunsetSunriseTime> UpdateSunsetSunrise(SunsetSunriseTime sunsetSunrise, int cityId, int sunsetSunriseId)
+    public async Task<SunsetSunriseTime> UpdateSunsetSunrise(SunsetSunriseTime sunsetSunrise)
     {
-        var city = await _dbContext.CityData.Include(city => city.SunsetSunriseTime).FirstOrDefaultAsync(c => c.Id == cityId);
+        var city = await _dbContext.CityData.Include(city => city.SunsetSunriseTime).FirstOrDefaultAsync(c => c.Id == sunsetSunrise.CityId);
         
         if (city is null)
         {
             throw new Exception("City not found.");
         }
         
-        var sunsetSunriseInDb = city.SunsetSunriseTime.FirstOrDefault(s => s.Id == sunsetSunriseId);
+        var sunsetSunriseToUpdate = city.SunsetSunriseTime.FirstOrDefault(s => s.Id == sunsetSunrise.Id);
         
-        if (sunsetSunriseInDb is null)
+        if (sunsetSunriseToUpdate is null)
         {
             throw new Exception("SunsetSunrise not found.");
         }
-        
-        sunsetSunriseInDb.Date = sunsetSunrise.Date;
-        sunsetSunriseInDb.Sunrise = sunsetSunrise.Sunrise;
-        sunsetSunriseInDb.Sunset = sunsetSunrise.Sunset;
+
+        _dbContext.SunsetSunriseTime.Entry(sunsetSunriseToUpdate).CurrentValues.SetValues(sunsetSunrise);
         
         await _dbContext.SaveChangesAsync();
-
-        return sunsetSunriseInDb;
+        
+        return sunsetSunriseToUpdate;
     }
 
     public async Task DeleteSunsetSunrise(int id)

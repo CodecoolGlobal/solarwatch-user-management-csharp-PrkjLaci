@@ -5,10 +5,11 @@ namespace SolarWatch.Repository.SunsetSunriseRepository;
 public interface ISunsetSunriseRepository
 {
     public Task<SunsetSunriseTime?> GetSunsetSunrise(string city, string date);
-    public Task AddSunsetSunrise(SunsetSunriseTime sunsetSunrise, int cityId);
+    public Task<List<SunsetSunriseTime>> GetAllSunsetSunrise();
+    public Task AddSunsetSunrise(SunsetSunriseTime sunsetSunrise);
 
     public Task<SunsetSunriseTime>
-        UpdateSunsetSunrise(SunsetSunriseTime sunsetSunrise, int cityId, int sunsetSunriseId);
+        UpdateSunsetSunrise(SunsetSunriseTime sunsetSunrise);
     public Task DeleteSunsetSunrise(int id);
     public Task SaveSunsetSunrise(City? city, SunsetSunriseTime sunsetSunrise);
 }
