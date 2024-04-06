@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SolarWatch.Contracts;
 using SolarWatch.Service.Authentication;
@@ -53,9 +57,16 @@ public class AuthController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        return Ok(new AuthResponse(result.Email, result.UserName, result.Token));
+        return Ok(new AuthResponse(result.Email, result.UserName, result.Token, result.Role));
     }
-
+    
+    [HttpGet("userInformation/{email}")]
+    public async Task<ActionResult<UserResponse>> GetUserInformation(string email)
+    {
+        var user = await _authenticationService.GetUserInformation(email);
+        return Ok(user);
+    }
+    
     private void AddErrors(AuthResult result)
     {
         foreach (var error in result.ErrorMessages)
