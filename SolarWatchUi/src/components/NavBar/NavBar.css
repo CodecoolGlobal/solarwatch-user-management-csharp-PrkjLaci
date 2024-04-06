@@ -1,0 +1,30 @@
+.navbar {
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.navbar-menu {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.navbar-menu li {
+    font-size: 16px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.navbar-menu li:hover {
+    color: #000;
+}
+
+.navbar-nav .nav-item {
+    margin-right: 40px;
+  }

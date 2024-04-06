@@ -23,7 +23,7 @@ public class SolarWatchContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<City>()
-            .HasIndex(u => u.State)
+            .HasIndex(u => u.Id)
             .IsUnique();
         
         modelBuilder.Entity<SunsetSunriseTime>()

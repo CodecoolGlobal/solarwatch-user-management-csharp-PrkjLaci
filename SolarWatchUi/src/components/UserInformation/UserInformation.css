@@ -1,0 +1,17 @@
+.user-information-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  width: 50%;
+  margin: auto;
+}
+
+.user-information-container p {
+    text-align: center;
+    color: #FFFFF0 !important;
+}
+
+  
+

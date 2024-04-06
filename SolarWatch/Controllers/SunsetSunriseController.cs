@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SolarWatch.Models;
 using SolarWatch.Repository.CityRepository;
@@ -36,7 +37,8 @@ public class SunsetSunriseController : ControllerBase
         _cityCoordinatesJsonProcessor = cityCoordinatesJsonProcessor;
     }
     
-    [HttpGet("GetSunsetSunrise"), Authorize(Roles = "Admin, User")]
+    [Authorize]
+    [HttpGet("GetSunsetSunrise")]
     public async Task<ActionResult> GetSunsetSunrise(string city, string date)
     {
         try
@@ -46,6 +48,7 @@ public class SunsetSunriseController : ControllerBase
             
             if (sunsetSunriseTime is not null && cityData is not null)
             {
+                sunsetSunriseTime.City = cityData;
                 return Ok(new { message = "Successfully get the sunset and the sunrise.", data = sunsetSunriseTime });
             }
             
@@ -56,9 +59,10 @@ public class SunsetSunriseController : ControllerBase
             var cityFromApi = await _geocodingApiProvider.GetCityCoordinates(city);
             var cityEntity = _cityCoordinatesJsonProcessor.Process(cityFromApi);
             
-           await _sunsetSunriseRepository.SaveSunsetSunrise(cityEntity, sunsetSunriseEntity);
+            await _sunsetSunriseRepository.SaveSunsetSunrise(cityEntity, sunsetSunriseEntity);
+            sunsetSunriseTime = sunsetSunriseEntity;
             
-            return Ok(new { message = "Successfully get the sunset and the sunrise.", data = sunsetSunriseEntity});
+            return Ok(new { message = "Successfully get the sunset and the sunrise.", data = sunsetSunriseTime});
         }
         catch (Exception e)
         {
@@ -66,13 +70,20 @@ public class SunsetSunriseController : ControllerBase
             return BadRequest(new { message = "Error getting sunset and sunrise data" });
         }
     }
+    [Authorize (Roles = "Admin")]
+    [HttpGet("GetAllSunsetSunrise")]
+    public async Task<ActionResult> GetAllSunsetSunrise()
+    {
+        var sunsetSunriseTimes = await _sunsetSunriseRepository.GetAllSunsetSunrise();
+        return Ok(new { message = "Successfully get all sunset and sunrise.", data = sunsetSunriseTimes });
+    }
     
     [HttpPost("AddSunsetSunrise"), Authorize(Roles = "Admin")]
-    public async Task<ActionResult> AddSunsetSunrise(SunsetSunriseTime sunsetSunrise, int cityId)
+    public async Task<ActionResult> AddSunsetSunrise(SunsetSunriseTime sunsetSunrise)
     {
         try
         {
-            await _sunsetSunriseRepository.AddSunsetSunrise(sunsetSunrise, cityId);
+            await _sunsetSunriseRepository.AddSunsetSunrise(sunsetSunrise);
             return Ok(new { message = "Sunset and sunrise added.", data = sunsetSunrise });
         }
         catch (Exception e)
@@ -83,11 +94,11 @@ public class SunsetSunriseController : ControllerBase
     }
     
     [HttpPatch("UpdateSunsetSunrise"), Authorize(Roles = "Admin")]
-    public async Task<ActionResult> UpdateSunsetSunrise(SunsetSunriseTime sunsetSunrise, int cityId, int sunsetSunriseId)
+    public async Task<ActionResult> UpdateSunsetSunrise(SunsetSunriseTime sunsetSunrise)
     {
         try
         {
-            var updatedSunsetSunrise = await _sunsetSunriseRepository.UpdateSunsetSunrise(sunsetSunrise, cityId, sunsetSunriseId);
+            var updatedSunsetSunrise = await _sunsetSunriseRepository.UpdateSunsetSunrise(sunsetSunrise);
             return Ok(new { message = "Sunset and sunrise updated.", data = updatedSunsetSunrise });
         }
         catch (Exception e)
@@ -97,7 +108,7 @@ public class SunsetSunriseController : ControllerBase
         }
     }
     
-    [HttpDelete("DeleteSunsetSunrise"), Authorize(Roles = "Admin")]
+    [HttpDelete("DeleteSunsetSunrise/{id}"), Authorize(Roles = "Admin")]
     public async Task<ActionResult> DeleteSunsetSunrise(int id)
     {
         try

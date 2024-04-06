@@ -1,0 +1,69 @@
+.solar-watch-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 25vh;
+    width: 70%;
+    margin: auto;
+    margin-top: 40px;
+    position: relative;
+    background: rgba(255, 255, 255, 0.1);
+    color: #FFFFF0;
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+
+}
+
+.solar-watch-container {
+    border-radius: 10px;
+    width: 25%;
+    margin: auto;
+}
+
+.solar-watch-input {
+    width: 300px;
+    height: 15px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    
+}
+
+.solar-watch-button {
+    width: 150px;
+    height: 40px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.solar-watch-button:hover {
+    background-color: #0056b3;
+}
+
+.solar-watch-button:active {
+    background-color: #003080;
+}
+
+.solar-watch-error {
+    color: red;
+    margin-top: 10px;
+}
+
+.sunset-sunrise-information-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    margin-top: 40px;
+}
+
+.sunset-sunrise-information-container p {
+    text-align: center;
+    color: #FFFFF0 !important;
+}

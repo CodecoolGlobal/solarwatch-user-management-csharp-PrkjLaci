@@ -32,8 +32,8 @@ public class TokenService : ITokenService
     private JwtSecurityToken CreateJwtToken(List<Claim> claims, SigningCredentials credentials,
         DateTime expiration) =>
         new(
-            "MySolarWatchApp",
-            "MySolarWatchApp",
+            _configuration["JwtAuthentication:ValidIssuer"],
+            _configuration["JwtAuthentication:ValidAudience"],
             claims,
             expires: expiration,
             signingCredentials: credentials

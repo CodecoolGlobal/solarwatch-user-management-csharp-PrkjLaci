@@ -16,11 +16,22 @@ public class CityDataRepository : ICityDataRepository
         _configuration = configuration;
         _dbContext = dbContext;
     }
-    
+
+    public async Task<List<City>> GetAllCityData()
+    {
+        return await _dbContext.CityData.ToListAsync();
+    }
+
     public async Task<City?> GetCityData(string city)
     {
         await using var dbContext = new SolarWatchContext(_configuration);
         return await dbContext.CityData.FirstOrDefaultAsync(c => c.CityName == city);
+    }
+
+    public async Task<City?> GetCityDataById(int id)
+    {
+        await using var dbContext = new SolarWatchContext(_configuration);
+        return await dbContext.CityData.FirstOrDefaultAsync(c => c.Id == id);
     }
 
     public async Task AddCityData(City city)
@@ -38,7 +49,7 @@ public class CityDataRepository : ICityDataRepository
 
     public async Task<City> UpdateCityData(City city)
     {
-        var cityDataToUpdate = _dbContext.CityData.FirstOrDefault(c => c.CityName == city.CityName);
+        var cityDataToUpdate = _dbContext.CityData.FirstOrDefault(c => c.Id == city.Id);
         if (cityDataToUpdate is null)
         {
             throw new Exception("City not found.");
