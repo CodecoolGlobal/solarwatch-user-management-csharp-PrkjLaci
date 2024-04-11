@@ -2,7 +2,7 @@
 
 namespace SolarWatch.Service.Authentication;
 
-public class AuthenticationSeeder
+public class AuthenticationSeeder : IAuthenticationSeeder
 {
     private RoleManager<IdentityRole> roleManager;
     private UserManager<IdentityUser> userManager;
