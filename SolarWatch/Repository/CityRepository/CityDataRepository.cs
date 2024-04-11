@@ -24,14 +24,12 @@ public class CityDataRepository : ICityDataRepository
 
     public async Task<City?> GetCityData(string city)
     {
-        await using var dbContext = new SolarWatchContext(_configuration);
-        return await dbContext.CityData.FirstOrDefaultAsync(c => c.CityName == city);
+        return await _dbContext.CityData.FirstOrDefaultAsync(c => c.CityName == city);
     }
 
     public async Task<City?> GetCityDataById(int id)
     {
-        await using var dbContext = new SolarWatchContext(_configuration);
-        return await dbContext.CityData.FirstOrDefaultAsync(c => c.Id == id);
+        return await _dbContext.CityData.FirstOrDefaultAsync(c => c.Id == id);
     }
 
     public async Task AddCityData(City city)
@@ -76,8 +74,7 @@ public class CityDataRepository : ICityDataRepository
 
     public async Task SaveCityData(City city)
     {
-        await using var dbContext = new SolarWatchContext(_configuration);
-        var cityDataEntity = await dbContext.CityData.FirstOrDefaultAsync(c => c.CityName == city.CityName);
+        var cityDataEntity = await _dbContext.CityData.FirstOrDefaultAsync(c => c.CityName == city.CityName);
 
         if (cityDataEntity is null)
         {
@@ -89,12 +86,14 @@ public class CityDataRepository : ICityDataRepository
                 State = city.State,
                 Country = city.Country
             };
-            await dbContext.CityData.AddAsync(cityDataEntity);
+            await _dbContext.CityData.AddAsync(cityDataEntity);
         }
         else
         {
             _logger.LogInformation($"City: {city.CityName} already exists in the database.");
         }
-        await dbContext.SaveChangesAsync();
+
+        Console.WriteLine(_dbContext.Database.ProviderName);
+        await _dbContext.SaveChangesAsync();
     }
 }

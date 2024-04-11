@@ -104,7 +104,7 @@ public class SunsetSunriseController : ControllerBase
         catch (Exception e)
         {
             _logger.LogError(e, "Sunset and sunrise not found.");
-            return BadRequest(new { message = "Sunset and sunrise not found." });
+            return NotFound(new { message = "Sunset and sunrise not found." });
         }
     }
     
@@ -119,7 +119,7 @@ public class SunsetSunriseController : ControllerBase
         catch (Exception e)
         {
             _logger.LogError(e, "Sunset and sunrise not found.");
-            return BadRequest(new { message = "Sunset and sunrise not found." });
+            return NotFound(new { message = "Sunset and sunrise not found." });
         }
     }
 
