@@ -4,6 +4,7 @@ using SolarWatch.Service.SunsetSunRise;
 using dotenv.net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SolarWatch.Data;
@@ -24,7 +25,7 @@ AddIdentity();
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
-var authenticationSeeder = scope.ServiceProvider.GetRequiredService<AuthenticationSeeder>();
+var authenticationSeeder = scope.ServiceProvider.GetRequiredService<IAuthenticationSeeder>();
 authenticationSeeder.AddRoles();
 authenticationSeeder.AddAdmin();
 var connection ="http://localhost:5173/";
@@ -71,7 +72,7 @@ void AddServices()
     builder.Services.AddScoped<ISunsetSunriseRepository, SunsetSunriseRepository>();
     builder.Services.AddScoped<IAuthService, AuthService>();
     builder.Services.AddScoped<ITokenService, TokenService>();
-    builder.Services.AddScoped<AuthenticationSeeder>();
+    builder.Services.AddScoped<IAuthenticationSeeder, AuthenticationSeeder>();
     builder.Services.AddEndpointsApiExplorer();
 }
 
@@ -108,7 +109,10 @@ void ConfigureSwagger()
 
 void AddDbContext()
 {
-    builder.Services.AddDbContext<SolarWatchContext>();
+    builder.Services.AddDbContext<SolarWatchContext>(options =>
+    {
+        options.UseSqlServer(builder.Configuration["DB_CONNECTION_STRING"]);
+    });
     builder.Services.AddDbContext<UsersContext>();
 }
 
@@ -149,3 +153,5 @@ void AddIdentity()
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<UsersContext>();
 }
+
+public partial class Program{}
