@@ -22,8 +22,7 @@ public class SunsetSunriseRepository : ISunsetSunriseRepository
     
     public async Task<SunsetSunriseTime?> GetSunsetSunrise(string city, string date)
     {
-        await using var dbContext = new SolarWatchContext(_configuration);
-        return await dbContext.SunsetSunriseTime.FirstOrDefaultAsync(c => c.City != null && c.City.CityName == city && c.Date == date);
+        return await _dbContext.SunsetSunriseTime.FirstOrDefaultAsync(c => c.City != null && c.City.CityName == city && c.Date == date);
     }
     public async Task<List<SunsetSunriseTime>> GetAllSunsetSunrise()
     {
@@ -91,13 +90,12 @@ public class SunsetSunriseRepository : ISunsetSunriseRepository
 
     public async Task SaveSunsetSunrise(City? city, SunsetSunriseTime sunsetSunrise)
     {
-        await using var dbContext = new SolarWatchContext(_configuration);
-        var cityEntity = await dbContext.CityData.FirstOrDefaultAsync(c => city != null && c.CityName == city.CityName);
+        var cityEntity = await _dbContext.CityData.FirstOrDefaultAsync(c => city != null && c.CityName == city.CityName);
 
         if (cityEntity is null)
         { 
-            await dbContext.CityData.AddAsync(city);
-            await dbContext.SaveChangesAsync();
+            await _dbContext.CityData.AddAsync(city);
+            await _dbContext.SaveChangesAsync();
             cityEntity = city;
         }
         else
@@ -107,10 +105,10 @@ public class SunsetSunriseRepository : ISunsetSunriseRepository
         
         sunsetSunrise.City = cityEntity;
         sunsetSunrise.CityId = cityEntity.Id;
-        await dbContext.SunsetSunriseTime.AddAsync(sunsetSunrise);
+        await _dbContext.SunsetSunriseTime.AddAsync(sunsetSunrise);
 
         
-        await dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
     }
 
 
