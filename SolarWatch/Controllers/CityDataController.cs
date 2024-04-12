@@ -73,7 +73,7 @@ public class CityDataController : ControllerBase
         var cityData = await _cityDataRepository.GetCityDataById(id);
         if (cityData != null)
         {
-            return Ok(cityData);
+            return Ok(new { message = "City data found.", data = cityData });
         }
         return NotFound(new { message = "City data not found." });
     }
