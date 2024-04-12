@@ -28,9 +28,18 @@ public class CityDataController : ControllerBase
     
     [Authorize(Roles = "Admin")]
     [HttpGet("GetAllCityData")]
-    public async Task<List<City>> GetAllCityData()
+    public async Task<ActionResult> GetAllCityData()
     {
-        return await _cityDataRepository.GetAllCityData();
+        try
+        {
+            var allCityData = await _cityDataRepository.GetAllCityData();
+            return Ok( new { message = "Successfully get all city data." , data = allCityData }); 
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error getting city data");
+            return BadRequest(new { message = "Error getting city data" });
+        }
     }
     
     [HttpGet("GetCityCoordinates"), Authorize(Roles = "Admin, User")]
