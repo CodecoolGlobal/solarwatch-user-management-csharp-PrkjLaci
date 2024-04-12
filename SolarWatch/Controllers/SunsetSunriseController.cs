@@ -74,8 +74,17 @@ public class SunsetSunriseController : ControllerBase
     [HttpGet("GetAllSunsetSunrise")]
     public async Task<ActionResult> GetAllSunsetSunrise()
     {
-        var sunsetSunriseTimes = await _sunsetSunriseRepository.GetAllSunsetSunrise();
-        return Ok(new { message = "Successfully get all sunset and sunrise.", data = sunsetSunriseTimes });
+        try
+        {
+            var sunsetSunriseTimes = await _sunsetSunriseRepository.GetAllSunsetSunrise();
+            return Ok(new { message = "Successfully get all sunset and sunrise.", data = sunsetSunriseTimes });
+
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error getting all sunset and sunrise data");
+            return BadRequest(new { message = "Error getting all sunset and sunrise data" });
+        }
     }
     
     [HttpPost("AddSunsetSunrise"), Authorize(Roles = "Admin")]
@@ -83,8 +92,8 @@ public class SunsetSunriseController : ControllerBase
     {
         try
         {
-            await _sunsetSunriseRepository.AddSunsetSunrise(sunsetSunrise);
-            return Ok(new { message = "Sunset and sunrise added.", data = sunsetSunrise });
+            var sunsetSunriseToAdd = await _sunsetSunriseRepository.AddSunsetSunrise(sunsetSunrise);
+            return Ok(new { message = "Sunset and sunrise added.", data = sunsetSunriseToAdd });
         }
         catch (Exception e)
         {
