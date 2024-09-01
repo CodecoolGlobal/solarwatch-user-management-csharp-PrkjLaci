@@ -1,16 +1,20 @@
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
 import "../../../index.css";
 
-const newSunsetSunriseFrom = ({
-  newSunsetSunriseData,
-  setNewSunsetSunriseData,
+const NewSunsetSunriseFrom = ({
   setIsAddingData,
   setSunsetSunrises,
   sunsetSunrises,
 }) => {
-    const nav = useNavigate();
+  const nav = useNavigate();
+  const [newSunsetSunriseData, setNewSunsetSunriseData] = useState({
+    date: "",
+    sunrise: "",
+    sunset: "",
+    cityId: "",
+  });
 
   const handleAddSunsetSunrise = async (e) => {
     e.preventDefault();
@@ -26,20 +30,20 @@ const newSunsetSunriseFrom = ({
           },
           body: JSON.stringify(newSunsetSunriseData),
         }
-    );
-    if(response.ok) {
-        const data = response.json();
-        setSunsetSunrises([... sunsetSunrises, data]);
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setSunsetSunrises([...sunsetSunrises, data.data]);
         toast.success("Sunset sunrise data added succesffuly!");
         setIsAddingData(false);
-    } else if(response.status === 400) {
-        toast.error("Sunset sunrise data already added!")
-    } else if(response.status === 401) {
-        toast.warn("Your session has expired. Please log in again.")
+      } else if(response.status === 400) {
+        toast.error("Sunset sunrise data already added!");
+      } else if(response.status === 401) {
+        toast.warn("Your session has expired. Please log in again.");
         nav("/login");
-    }
+      }
     } catch (error) {
-        toast.warn(error)
+      toast.warn(error);
     }
   };
 
@@ -149,4 +153,4 @@ const newSunsetSunriseFrom = ({
   );
 };
 
-export default newSunsetSunriseFrom;
+export default NewSunsetSunriseFrom;
