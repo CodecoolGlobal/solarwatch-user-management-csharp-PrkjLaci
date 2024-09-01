@@ -29,18 +29,8 @@ const CityDataTable = ({ cities, setCities }) => {
         }
       );
       if (response.ok) {
-        const updatedCitiesResponse = await fetch(
-          "http://localhost:5071/CityData/GetAllCityData",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${userInfo.token}`,
-            },
-          }
-        );
-        const updatedCitiesData = await updatedCitiesResponse.json();
-        setCities(updatedCitiesData.$values);
+        const updatedCities = cities.filter((city) => city.id !== cityId);
+        setCities(updatedCities);
         toast.success("Deleted city successfully.");
         setAddingRowId(null);
       }
@@ -73,18 +63,10 @@ const CityDataTable = ({ cities, setCities }) => {
       );
 
       if (response.ok) {
-        const updatedCitiesResponse = await fetch(
-          "http://localhost:5071/CityData/GetAllCityData",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${userInfo.token}`,
-            },
-          }
+        const updatedCities = cities.map((city) =>
+          city.id === cityData.id ? cityData : city
         );
-        const updatedCitiesData = await updatedCitiesResponse.json();
-        setCities(updatedCitiesData.$values);
+        setCities(updatedCities);
         toast.success("City data updated successfully.");
         setAddingRowId(null);
       }
