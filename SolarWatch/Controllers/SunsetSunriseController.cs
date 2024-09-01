@@ -89,7 +89,7 @@ public class SunsetSunriseController : ControllerBase
     }
     
     [HttpPost("AddSunsetSunrise"), Authorize(Roles = "Admin")]
-    public async Task<ActionResult> AddSunsetSunrise(SunsetSunriseTime sunsetSunrise)
+    public async Task<ActionResult> AddSunsetSunrise([FromBody]SunsetSunriseTime sunsetSunrise)
     {
         try
         {
@@ -104,7 +104,7 @@ public class SunsetSunriseController : ControllerBase
     }
     
     [HttpPatch("UpdateSunsetSunrise"), Authorize(Roles = "Admin")]
-    public async Task<ActionResult> UpdateSunsetSunrise(SunsetSunriseTime sunsetSunrise)
+    public async Task<ActionResult> UpdateSunsetSunrise([FromBody]SunsetSunriseTime sunsetSunrise)
     {
         try
         {
