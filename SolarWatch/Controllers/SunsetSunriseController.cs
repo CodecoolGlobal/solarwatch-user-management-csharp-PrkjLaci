@@ -70,6 +70,7 @@ public class SunsetSunriseController : ControllerBase
             return BadRequest(new { message = "Error getting sunset and sunrise data" });
         }
     }
+    
     [Authorize (Roles = "Admin")]
     [HttpGet("GetAllSunsetSunrise")]
     public async Task<ActionResult> GetAllSunsetSunrise()
