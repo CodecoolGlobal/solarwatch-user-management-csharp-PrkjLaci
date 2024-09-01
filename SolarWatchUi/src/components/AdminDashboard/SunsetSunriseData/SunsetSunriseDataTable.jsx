@@ -27,20 +27,8 @@ const SunsetSunriseDataTable = ({ sunsetSunrises, setSunsetSunrises }) => {
       }
     );
     if (response.ok) {
-      const updatedSunsetSunrisesResponse = await fetch(
-        "http://localhost:5071/SunsetSunrise/GetAllSunsetSunrise",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${userInfo.token}`,
-          },
-        }
-      );
-      const updatedSunsetSunrisesData =
-        await updatedSunsetSunrisesResponse.json();
-      console.log(updatedSunsetSunrisesData);
-      setSunsetSunrises(updatedSunsetSunrisesData.data.$values);
+      const updatedSunsetSunrises = sunsetSunrises.filter(s => s.id !== id);
+      setSunsetSunrises(updatedSunsetSunrises);
       toast.success("Deleted sunset sunrise successfully.");
       setAddingRowId(null);
     }
@@ -56,31 +44,18 @@ const SunsetSunriseDataTable = ({ sunsetSunrises, setSunsetSunrises }) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${userInfo.token}`,
         },
-        body: JSON.stringify({
-          id: sunsetSunriseData.id,
-          date: sunsetSunriseData.date,
-          sunrise: sunsetSunriseData.sunrise,
-          sunset: sunsetSunriseData.sunset,
-          cityId: sunsetSunriseData.cityId,
-        }),
+        body: JSON.stringify(sunsetSunriseData),
       }
     );
 
     if (response.ok) {
-      const updatedSunsetSunrisesResponse = await fetch(
-        "http://localhost:5071/SunsetSunrise/GetAllSunsetSunrise",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${userInfo.token}`,
-          },
+      const updatedSunsetSunrises = sunsetSunrises.map((s) => {
+        if (s.id === sunsetSunriseData.id) {
+          return sunsetSunriseData;
         }
-      );
-      const updatedSunsetSunrisesData =
-        await updatedSunsetSunrisesResponse.json();
-      console.log(updatedSunsetSunrisesData);
-      setSunsetSunrises(updatedSunsetSunrisesData.data.$values);
+        return s;
+      });
+      setSunsetSunrises(updatedSunsetSunrises);
       toast.success("Updated sunset sunrise successfully.");
       setAddingRowId(null);
     }
