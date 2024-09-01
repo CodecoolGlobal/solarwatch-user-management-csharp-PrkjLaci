@@ -28,7 +28,6 @@ public class SunsetSunriseRepository : ISunsetSunriseRepository
     {
         return await _dbContext.SunsetSunriseTime.ToListAsync();
     }
-
     public async Task<SunsetSunriseTime> AddSunsetSunrise(SunsetSunriseTime sunsetSunrise)
     {
         var city = await _dbContext.CityData.Include(city => city.SunsetSunriseTime).FirstOrDefaultAsync(c => c.Id == sunsetSunrise.CityId);
@@ -111,6 +110,4 @@ public class SunsetSunriseRepository : ISunsetSunriseRepository
         
         await _dbContext.SaveChangesAsync();
     }
-
-
 }
