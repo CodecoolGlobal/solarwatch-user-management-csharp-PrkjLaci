@@ -79,7 +79,7 @@ public class CityDataController : ControllerBase
     }
     
     [HttpPost("AddCityData"), Authorize(Roles = "Admin")] 
-    public async Task<ActionResult> AddCityData(City cityData)
+    public async Task<ActionResult> AddCityData([FromBody]City cityData)
     {
         try
         {
@@ -95,7 +95,7 @@ public class CityDataController : ControllerBase
     }
     
     [HttpPatch("UpdateCityData"), Authorize(Roles = "Admin")]
-    public async Task<ActionResult> UpdateCityData(City cityData)
+    public async Task<ActionResult> UpdateCityData([FromBody]City cityData)
     {
         try
         {
