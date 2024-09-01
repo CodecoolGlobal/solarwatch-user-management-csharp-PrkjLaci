@@ -36,6 +36,8 @@ const SunsetSunriseData = () => {
       }
 
       const data = await response.json();
+      console.log(data);
+      
       if (
         JSON.stringify(data.data.$values) !== JSON.stringify(sunsetSunrises)
       ) {
@@ -59,14 +61,6 @@ const SunsetSunriseData = () => {
         setSunsetSunrises={setSunsetSunrises}
       />
       {isAddingData ? (
-        // <NewCityDataForm
-        //   newCityData={newCityData}
-        //   setNewCityData={setNewCityData}
-        //   handleAddCity={handleAddCity}
-        //   cities={cities}
-        //   setCities={setCities}
-        //   setIsAddingCity={setIsAddingCity}
-        // />
         <NewSunsetSunriseForm
           newSunsetSunriseData={newSunsetSunriseData}
           setNewSunsetSunriseData={setNewSunsetSunriseData}

@@ -29,8 +29,6 @@ const SolarWatch = ({ setIsLoggedIn }) => {
     setDate(e.target.value);
   };
 
-  console.log(cityName, date);
-
   const handleSubmit = async (e) => {
     try {
       const userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -78,8 +76,6 @@ const SolarWatch = ({ setIsLoggedIn }) => {
       console.error("Error:", error);
     }
   };
-
-  console.log(cityData, sunsetSunrise, isSubmited);
 
   return (
     <div className="solar-watch-container">

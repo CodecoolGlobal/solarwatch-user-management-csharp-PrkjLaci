@@ -39,14 +39,12 @@ const SunsetSunriseDataTable = ({ sunsetSunrises, setSunsetSunrises }) => {
       );
       const updatedSunsetSunrisesData =
         await updatedSunsetSunrisesResponse.json();
-        console.log(updatedSunsetSunrisesData);
+      console.log(updatedSunsetSunrisesData);
       setSunsetSunrises(updatedSunsetSunrisesData.data.$values);
       toast.success("Deleted sunset sunrise successfully.");
       setAddingRowId(null);
     }
   };
-
-  console.log(sunsetSunriseData);
 
   const handleUpdateSunsetSunrise = async () => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -81,7 +79,7 @@ const SunsetSunriseDataTable = ({ sunsetSunrises, setSunsetSunrises }) => {
       );
       const updatedSunsetSunrisesData =
         await updatedSunsetSunrisesResponse.json();
-        console.log(updatedSunsetSunrisesData);
+      console.log(updatedSunsetSunrisesData);
       setSunsetSunrises(updatedSunsetSunrisesData.data.$values);
       toast.success("Updated sunset sunrise successfully.");
       setAddingRowId(null);
@@ -97,9 +95,6 @@ const SunsetSunriseDataTable = ({ sunsetSunrises, setSunsetSunrises }) => {
   const handleCloseForm = () => {
     setAddingRowId(null);
   };
-  console.log(sunsetSunrises);
-  console.log(sunsetSunriseData);
-
   return (
     <table className="table table-striped">
       <thead>
@@ -115,13 +110,13 @@ const SunsetSunriseDataTable = ({ sunsetSunrises, setSunsetSunrises }) => {
       <tbody>
         {sunsetSunrises.map((sunsetSunrise, index) => (
           <>
-            {console.log(sunsetSunrise.id)}
             <tr
               style={{
                 backgroundColor: `rgba(255, 255, 255, ${
                   index % 2 === 0 ? 0.1 : 0.3
                 })`,
               }}
+              key={sunsetSunrise.id}
             >
               <th scope="row">{index + 1}</th>
               <td>{sunsetSunrise.date}</td>
