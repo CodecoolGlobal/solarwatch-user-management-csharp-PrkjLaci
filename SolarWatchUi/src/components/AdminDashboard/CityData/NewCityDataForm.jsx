@@ -1,12 +1,14 @@
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 
-const NewCityDataForm = ({
-  newCityData,
-  setNewCityData,
-  cities,
-  setCities,
-  setIsAddingCity,
-}) => {
+const NewCityDataForm = ({ setIsAddingCity, setCities, cities }) => {
+  const [newCityData, setNewCityData] = useState({
+    cityName: "",
+    latitude: "",
+    longitude: "",
+    country: "",
+    state: "",
+  });
   const handleAddCity = async (e) => {
     e.preventDefault();
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -24,10 +26,10 @@ const NewCityDataForm = ({
       );
       if (response.ok) {
         const data = await response.json();
-        setCities([...cities, data]);
+        setCities([...cities, data.data]);
         toast.success("City added successfully.");
         setIsAddingCity(false);
-      } //response status check, role, expired token..
+      }
     } catch (error) {
       console.log("Error:", error);
       toast.error("An error occurred while adding the city.");
