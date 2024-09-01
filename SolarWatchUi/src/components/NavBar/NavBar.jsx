@@ -12,14 +12,14 @@ const NavBar = ({ isLoggedIn, isAdminLoggedIn }) => {
         <ul className="navbar-nav">
           <li className="nav-item active">
             <Link to="/" className="nav-link">
-              Home <span className="sr-only">(current)</span>
+              Home <span className="sr-only"></span>
             </Link>
           </li>
 
           <li className="nav-item">
             {isLoggedIn ? (
               <Link to="/solar-watch" className="nav-link">
-                Solar Watch <span className="sr-only">(current)</span>
+                Solar Watch <span className="sr-only"></span>
               </Link>
             ) : (
               <Link className="nav-link disabled">SolarWatch</Link>
@@ -66,14 +66,14 @@ const NavBar = ({ isLoggedIn, isAdminLoggedIn }) => {
           ) : (
             <li className="nav-item">
               <Link to="/login" className="nav-link">
-                Login/Sign up <span className="sr-only">(current)</span>
+                Login/Sign up <span className="sr-only"></span>
               </Link>
             </li>
           )}
 
           <li className="nav-item">
             <Link to="/about" className="nav-link">
-              About <span className="sr-only">(current)</span>
+              About <span className="sr-only"></span>
             </Link>
           </li>
         </ul>
