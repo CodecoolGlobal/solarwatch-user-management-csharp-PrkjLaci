@@ -8,15 +8,11 @@ namespace SolarWatch.Repository.SunsetSunriseRepository;
 public class SunsetSunriseRepository : ISunsetSunriseRepository
 {
     private readonly ILogger<SunsetSunriseRepository> _logger;
-    private readonly IConfiguration _configuration;
-    private readonly ICityDataRepository _cityDataRepository;
     private readonly SolarWatchContext _dbContext;
     
-    public SunsetSunriseRepository(ILogger<SunsetSunriseRepository> logger, IConfiguration configuration, ICityDataRepository cityDataRepository, SolarWatchContext dbContext)
+    public SunsetSunriseRepository(ILogger<SunsetSunriseRepository> logger, SolarWatchContext dbContext)
     {
         _logger = logger;
-        _configuration = configuration;
-        _cityDataRepository = cityDataRepository;
         _dbContext = dbContext;
     }
     
